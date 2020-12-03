@@ -162,18 +162,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </div>
                 </div>
 
-                <!-- SidebarSearch Form -->
-                <div class="form-inline">
-                    <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-sidebar">
-                                <i class="fas fa-search fa-fw"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -197,16 +185,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link active">
-                                        <i class="fas fa-circle nav-icon"></i>
-                                        <p>Active Page</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="fas fa-circle nav-icon"></i>
-                                        <p>Inactive Page</p>
-                                    </a>
+                                    <router-link to="/users" class="nav-link">
+                                        <i class="nav-icon fas fa-users"></i>
+                                        <p>Users</p>
+                                    </router-link>
                                 </li>
                             </ul>
                         </li>
