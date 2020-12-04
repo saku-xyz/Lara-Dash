@@ -1991,6 +1991,7 @@ __webpack_require__.r(__webpack_exports__);
       editmode: false,
       users: {},
       form: new Form({
+        id: "",
         name: "",
         email: "",
         password: "",
@@ -2036,10 +2037,22 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     updateUser: function updateUser() {
-      console.log('Editing data');
+      var _this3 = this;
+
+      this.$Progress.start();
+      this.form.put('api/user/' + this.form.id).then(function () {
+        Swal.fire("Updated!", "Information has been updated.", "success");
+        $("#addNewModal").modal("hide");
+
+        _this3.$Progress.finish();
+
+        Fire.$emit("AfterCRUD");
+      })["catch"](function () {
+        _this3.$Progress.fail();
+      });
     },
     deleteUser: function deleteUser(id) {
-      var _this3 = this;
+      var _this4 = this;
 
       Swal.fire({
         title: "Are you sure?",
@@ -2051,7 +2064,7 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: "Yes, delete it!"
       }).then(function (result) {
         if (result.isConfirmed) {
-          _this3.form["delete"]('api/user/' + id).then(function () {
+          _this4.form["delete"]('api/user/' + id).then(function () {
             Swal.fire("Deleted!", "Your file has been deleted.", "success");
             Fire.$emit('AfterCRUD');
           })["catch"](function () {
@@ -2062,11 +2075,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
     this.loadUsers();
     Fire.$on("AfterCRUD", function () {
-      _this4.loadUsers();
+      _this5.loadUsers();
     });
   }
 });
@@ -64138,7 +64151,7 @@ var render = function() {
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
-                    return _vm.createUser($event)
+                    _vm.editmode ? _vm.updateUser() : _vm.createUser()
                   }
                 }
               },

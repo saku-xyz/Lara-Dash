@@ -77,7 +77,7 @@
                         </button>
                     </div>
 
-                    <form @submit.prevent="createUser">
+                    <form @submit.prevent="editmode ? updateUser() : createUser()">
                         <div class="modal-body">
                             <div class="form-group">
                                 <input
@@ -177,6 +177,7 @@ export default {
             editmode: false,
             users: {},
             form: new Form({
+                id: "",
                 name: "",
                 email: "",
                 password: "",
@@ -201,8 +202,7 @@ export default {
         },
         createUser(){
             this.$Progress.start();
-            this.form
-                .post("api/user")
+            this.form.post("api/user")
                 .then(() => {
                     Fire.$emit("AfterCRUD");
                     $("#addNewModal").modal("hide");
@@ -218,7 +218,21 @@ export default {
                 });
         },
         updateUser(){
-            console.log('Editing data');
+            this.$Progress.start();
+            this.form.put('api/user/'+this.form.id)
+            .then(()=>{
+                Swal.fire(
+                        "Updated!",
+                        "Information has been updated.",
+                        "success"
+                )
+                $("#addNewModal").modal("hide");
+                this.$Progress.finish();
+                Fire.$emit("AfterCRUD");
+            })
+            .catch(()=>{
+                this.$Progress.fail();
+            })
         },
         deleteUser(id) {
             Swal.fire({
@@ -236,7 +250,7 @@ export default {
                         "Deleted!",
                         "Your file has been deleted.",
                         "success"
-                    );
+                    )
                     Fire.$emit('AfterCRUD');
                     }).catch(()=> {
                         Swal("Failed!", "There was something wrong.", "warning");
