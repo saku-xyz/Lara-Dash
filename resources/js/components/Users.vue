@@ -31,11 +31,11 @@
                             </thead>
                             <tbody>
                                 <tr v-for="user in users" :key="user.id">
-                                    <td>{{user.id}}</td>
-                                    <td>{{user.name}}</td>
-                                    <td>{{user.email}}</td>
-                                    <td>{{user.type | upText}}</td>
-                                    <td>{{user.created_at | myDate}}</td>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.type | upText }}</td>
+                                    <td>{{ user.created_at | myDate }}</td>
                                     <td>
                                         <a href="#">
                                             <i class="fa fa-edit blue"></i>
@@ -141,13 +141,13 @@
                                     v-model="form.type"
                                     class="form-control"
                                     :class="{
-                                        'is-invalid': form.errors.has(
-                                            'type'
-                                        )
+                                        'is-invalid': form.errors.has('type')
                                     }"
                                     id="type"
                                 >
-                                    <option value="" disabled>Select User Role</option>
+                                    <option value="" disabled
+                                        >Select User Role</option
+                                    >
                                     <option value="admin">Admin</option>
                                     <option value="user">Standard User</option>
                                     <option value="author">Author</option>
@@ -181,7 +181,7 @@
 export default {
     data() {
         return {
-            users : {},
+            users: {},
             form: new Form({
                 name: "",
                 email: "",
@@ -191,13 +191,20 @@ export default {
         };
     },
     methods: {
-        loadUsers(){
+        loadUsers() {
             axios.get("api/user").then(({ data }) => (this.users = data.data));
         },
 
         createUser() {
             this.$Progress.start();
             this.form.post("api/user");
+
+            $("#addNewModal").modal("hide");
+
+            Toast.fire({
+                icon: "success",
+                title: "User Created in successfully"
+            });
             this.$Progress.finish();
         }
     },
