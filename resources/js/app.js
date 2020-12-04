@@ -62,6 +62,7 @@ Vue.filter('myDate', function(created){
     return moment(created).format('MMMM Do YYYY');
 });
 
+window.Fire = new Vue();
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 

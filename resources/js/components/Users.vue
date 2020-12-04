@@ -197,8 +197,9 @@ export default {
 
         createUser() {
             this.$Progress.start();
-            this.form.post("api/user");
-
+            this.form.post("api/user")
+            .then(() => {
+            Fire.$emit('afterCreate');
             $("#addNewModal").modal("hide");
 
             Toast.fire({
@@ -206,10 +207,17 @@ export default {
                 title: "User Created in successfully"
             });
             this.$Progress.finish();
+            })
+            .catch(()=>{
+            this.$Progress.fail();
+            })
         }
     },
     created() {
         this.loadUsers();
+        Fire.$on('afterCreate', () => {
+            this.loadUsers();
+        });
     }
 };
 </script>

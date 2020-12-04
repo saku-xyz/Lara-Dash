@@ -2014,18 +2014,30 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     createUser: function createUser() {
+      var _this2 = this;
+
       this.$Progress.start();
-      this.form.post("api/user");
-      $("#addNewModal").modal("hide");
-      Toast.fire({
-        icon: "success",
-        title: "User Created in successfully"
+      this.form.post("api/user").then(function () {
+        Fire.$emit('afterCreate');
+        $("#addNewModal").modal("hide");
+        Toast.fire({
+          icon: "success",
+          title: "User Created in successfully"
+        });
+
+        _this2.$Progress.finish();
+      })["catch"](function () {
+        _this2.$Progress.fail();
       });
-      this.$Progress.finish();
     }
   },
   created: function created() {
+    var _this3 = this;
+
     this.loadUsers();
+    Fire.$on('afterCreate', function () {
+      _this3.loadUsers();
+    });
   }
 });
 
@@ -79669,6 +79681,7 @@ Vue.filter('upText', function (text) {
 Vue.filter('myDate', function (created) {
   return moment__WEBPACK_IMPORTED_MODULE_0___default()(created).format('MMMM Do YYYY');
 });
+window.Fire = new Vue();
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
