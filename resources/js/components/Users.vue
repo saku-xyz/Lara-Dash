@@ -9,8 +9,7 @@
                         <div class="card-tools">
                             <button
                                 class="btn btn-success"
-                                data-toggle="modal"
-                                data-target="#addNewModal"
+                                @click="addUserModal()"
                             >
                                 Add New <i class="fas fa-user-plus"></i>
                             </button>
@@ -37,14 +36,11 @@
                                     <td>{{ user.type | upText }}</td>
                                     <td>{{ user.created_at | myDate }}</td>
                                     <td>
-                                        <a href="#">
+                                        <a href="#" @click="updateUserModal(user)">
                                             <i class="fa fa-edit blue"></i>
                                         </a>
 
-                                        <a
-                                            href="#"
-                                            @click="deleteUser(user.id)"
-                                        >
+                                        <a href="#" @click="deleteUser(user.id)">
                                             <i class="fa fa-trash red"></i>
                                         </a>
                                     </td>
@@ -69,9 +65,8 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addNewModalLabel">
-                            Modal title
-                        </h5>
+                        <h5 class="modal-title" v-show="!editmode" id="addNewModalLabel"> Add New User</h5>
+                        <h5 class="modal-title" v-show="editmode" id="addNewModalLabel">Update User's Details </h5>
                         <button
                             type="button"
                             class="close"
@@ -85,7 +80,6 @@
                     <form @submit.prevent="createUser">
                         <div class="modal-body">
                             <div class="form-group">
-                                <label>Username</label>
                                 <input
                                     v-model="form.name"
                                     type="text"
@@ -102,7 +96,6 @@
                                 ></has-error>
                             </div>
                             <div class="form-group">
-                                <label>Email</label>
                                 <input
                                     v-model="form.email"
                                     type="email"
@@ -119,7 +112,6 @@
                                 ></has-error>
                             </div>
                             <div class="form-group">
-                                <label>Password</label>
                                 <input
                                     v-model="form.password"
                                     type="password"
@@ -138,7 +130,6 @@
                                 ></has-error>
                             </div>
                             <div class="form-group">
-                                <label>User Type</label>
                                 <select
                                     name="type"
                                     v-model="form.type"
@@ -169,9 +160,8 @@
                             >
                                 Close
                             </button>
-                            <button type="submit" class="btn btn-primary">
-                                Create
-                            </button>
+                            <button type="submit" v-show="!editmode" class="btn btn-primary">Create</button>
+                            <button type="submit" v-show="editmode" class="btn btn-success">Update</button>
                         </div>
                     </form>
                 </div>
@@ -184,6 +174,7 @@
 export default {
     data() {
         return {
+            editmode: false,
             users: {},
             form: new Form({
                 name: "",
@@ -194,11 +185,21 @@ export default {
         };
     },
     methods: {
-        loadUsers() {
+        addUserModal(){
+            this.editmode = false;
+            this.form.reset();
+            $("#addNewModal").modal("show");
+        },
+        updateUserModal(user){
+            this.editmode = true;
+            this.form.reset();
+            $("#addNewModal").modal("show");
+            this.form.fill(user);
+        },
+        loadUsers(){
             axios.get("api/user").then(({ data }) => (this.users = data.data));
         },
-
-        createUser() {
+        createUser(){
             this.$Progress.start();
             this.form
                 .post("api/user")
@@ -216,7 +217,9 @@ export default {
                     this.$Progress.fail();
                 });
         },
-
+        updateUser(){
+            console.log('Editing data');
+        },
         deleteUser(id) {
             Swal.fire({
                 title: "Are you sure?",
